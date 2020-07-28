@@ -1,0 +1,251 @@
+body {
+    font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+    height: 100%;
+    background-color: #000;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+
+.main {
+    padding: 0px 10px;
+    height: 100%;
+    max-height: inherit;
+}
+
+.message {
+    width: 50%;
+    margin: 1rem auto;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    color: red;
+    font-weight: lighter;
+    font-style: oblique;
+    font-size: 1rem;
+}
+
+.login {
+    background: #2f1b7373;
+    border-radius: 10px;
+    padding: 2rem;
+    margin: 10% 1rem 70% 1rem;
+}
+
+/* NAVBAr ------------------- */
+#appLogo{
+    animation-name: example;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+@keyframes example {
+    0%   {transform:rotate(0deg)}
+    25%  {transform:rotate(360deg)}
+    50%  {transform:rotate(360deg)}
+    75%  {transform:rotate(360deg)}
+    100% {transform:rotate(360deg)}
+}
+
+
+i.angle.double.down.icon {
+    animation-name: icondown;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+@keyframes icondown {
+    0%   {transform:translateY(0px)}
+    25%  {transform:translateY(5px)}
+    50%  {transform:translateY(10px)}
+    75%  {transform:translateY(15px)}
+    100% {transform:translateY(20px)}
+}
+
+/* DASHBOARD------------------------ */
+.spec{
+    cursor: pointer;
+}
+
+.dashboard {
+    margin: 5% 1rem 5% 1rem;
+}
+
+.newURL{    
+    color: #9c1e1e;
+    margin: 1rem;
+    padding: 1rem;
+    border: solid #d27a12 1px;
+    border-radius: 5px;
+    text-align: center;
+    justify-content: space-between;
+    font-size: 1rem;
+    display: flex;
+    overflow-wrap: anywhere;
+}
+input#input {
+    width: 80%;
+    border: none;
+    text-align: start;
+}
+#input:focus{
+    outline: none;
+}
+
+/* Showall------------------------ */
+.showall{
+    height: 100%;
+    max-height: 600px;
+    overflow: auto;
+}
+
+.showone {
+    display: flex;
+    justify-content: space-between;
+}
+
+.ui.list {
+    width: 100%;
+    max-width: 75%;
+    overflow-wrap: anywhere;
+}
+.showoneBtn {
+    padding: 0.5rem;
+    display: flex;
+    justify-content: space-evenly;
+    max-width: 20%;
+    width: 100%;
+    transition: 'width' 2s ease-in;
+}
+
+input.description.showOneLink {
+    width: 100%;
+    border: none;
+    outline: none;
+}
+/* ------------media----------- */
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+}
+
+@media screen and (max-width: 450px) {
+    .login-form{
+        margin-top: 10%;
+    }
+    .main{
+        height: 100%;
+    }
+}
+@media screen and (max-width: 600px) {
+    .newURL{
+        display: block;
+        justify-content: initial;
+    }
+}
+
+
+@media screen and (max-width: 770px) {
+    .login-form{
+        margin-top: 10%;
+    }
+    .login {
+        background: #2f1b7373;
+        border-radius: 10px;
+        padding: 2rem;
+        margin: 5% 1rem 1rem 1rem;
+    }
+}
+
+@media screen and (min-width: 768px){
+    .main{
+        margin-left: 40%;
+        width: 60%;
+        position: fixed;
+        overflow-x: auto;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        height: 100%;
+    }
+
+    .sidenav{
+        width: 40%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+    }
+
+    .login-form{
+        margin-top: 80%;
+    }
+
+}
+
+
+.login-main-text {
+    padding: 60px;
+    color: #fff;
+    text-align: center;
+}
+
+.login-main-text h2{
+    font-weight: 300;
+}
+
+.btn-black{
+    background-color: #000 !important;
+    color: #fff;
+}
+
+/* HOMEPAGE----------------- */
+.homeHead {
+    margin: 1rem 0;
+    padding: 1rem;
+    text-align: center;
+    line-height: 10px;
+    letter-spacing: 2px;
+}
+.homeHead h3 {
+    font-size: xx-large;
+    color: #21c58e;
+    font-family: 'Rowdies', cursive;
+    animation-name: wobble;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes wobble {
+    0%, 100% {
+        font-size: xx-large;
+      }
+      50% {
+        font-size: larger;
+      }
+}
+.homeHeadFixed {
+    margin: 1rem 0;
+    padding: 1rem;
+    text-align: center;
+    line-height: 10px;
+    letter-spacing: 2px;
+}
+.homeHeadFixed h3 {
+    font-size: xx-large;
+    color: #21c58e;
+    font-family: 'Rowdies', cursive;
+}
+h4.header {
+    letter-spacing: 7px;
+    word-spacing: 5px;
+    font-family: 'Rowdies', cursive;
+}
+
+
+/* additional */
+.ui.list .list>.item>.image, .ui.list>.item>.image {
+    display: table-cell;
+    background-color: transparent;
+    margin: 0;
+    vertical-align: middle;
+}
