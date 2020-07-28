@@ -42,7 +42,7 @@ function App() {
           </div>
           <div className="main">
             <Switch>
-                <Route exact path="/" component={Homepage}/>
+                <Route exact path="/h" component={Homepage}/>
                 <Route exact path="/l" component={Login}/>
                 <Route exact path="/s" component={Signup}/>
                 <Route exact path="/d/:id" >

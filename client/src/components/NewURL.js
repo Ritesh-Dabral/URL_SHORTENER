@@ -51,13 +51,13 @@ function NewURL({uid}) {
                 url,
                 uid
             }
-            axios.post('http://localhost:8085/uS',obj)
+            axios.post('https://srtyapp.herokuapp.com/user/add',obj)
             .then(res=>{
                 setUrl('');
                 setName('');
                 setErrColor('green');
                 setErr('Phew!!! Everything is OK');
-                setNewUrl('http://localhost:8085/'+res.data);
+                setNewUrl('https://srtyapp.herokuapp.com/'+res.data);
   
             })
             .catch(error=>{

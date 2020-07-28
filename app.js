@@ -23,8 +23,9 @@ app.use(express.static(path.join(__dirname, "client", "build")))
 //R O U T E
 
     //Show all data depending upon uid
-app.post("/",(req,res)=>{
-    const uid = req.body.uid;
+app.get("/user/:uid",(req,res)=>{
+    console.log("Get all links for: ",req.params.uid);
+    const uid = req.params.uid;
     srtyIns.find({"createdBy":uid},function(err,db_res){
         if(err){
             res.status(500).send(err);
@@ -50,6 +51,7 @@ app.get("/:id",(req,res)=>{
             }
             else{
                 const ori_url = db_res.oriURL;
+                console.log("Redirect req from: ",db_res.createdBy," -->for: ",req.params.id);
                 res.redirect(ori_url);
             }
         });
@@ -57,7 +59,8 @@ app.get("/:id",(req,res)=>{
 });
 
     //Create new document with uid
-app.post("/uS",(req,res)=>{
+app.post("/user/add",(req,res)=>{
+    console.log("New url req from: ",req.body.uid);
     var original = {
         name: req.body.name,
         oriURL: req.body.url,
@@ -66,11 +69,11 @@ app.post("/uS",(req,res)=>{
     }
     srtyIns.create(original,function(err,db_res){
         if(err){
-            console.log(err);
+            console.log(err,"\nfor uid: ",req.body.uid);
             res.status(500).send(err)
         }
         else{
-            const temp = 'http://localhost:8085/'+db_res._id;
+            const temp = `https://srtyapp.herokuapp.com/`+db_res._id;
             srtyIns.findByIdAndUpdate(db_res._id,{"newURL":temp},function(err,db_res){
                 if(err){
                     console.log(err);
@@ -88,7 +91,7 @@ app.post("/uS",(req,res)=>{
 });
 
     //destroy
-app.delete('/del/:id',(req,res)=>{
+app.delete('/user/del/:id',(req,res)=>{
     
     srtyIns.findByIdAndDelete(req.params.id,function(err,db_res){
         if(err){
@@ -96,6 +99,7 @@ app.delete('/del/:id',(req,res)=>{
             res.status(404).send(err)
         }
         else{
+            console.log("deleted data with unique id: ",req.params.id);
             res.status(200).send("Deleted");
         }
     });
@@ -112,5 +116,5 @@ if(process.env.NODE_ENV === 'production'){
 
 // S E R V E R
 app.listen(PORT,()=>{
-    console.log("S E R V E R ");
+    console.log("S E R V E R at port",PORT);
 })

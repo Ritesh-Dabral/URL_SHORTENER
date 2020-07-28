@@ -14,7 +14,7 @@ function Showall({uid}) {
         var copy = document.getElementById(`${index}`).value;
         copy = copy.split('/').pop();
         
-        const url = `http://localhost:8085/del/${copy}`
+        const url = `https://srtyapp.herokuapp.com/user/del/${copy}`
         axios.delete(url)
         .then(res=>{
             setErrColor('green');
@@ -34,8 +34,8 @@ function Showall({uid}) {
 
 
     useEffect(()=>{
-        const url = `http://localhost:8085/`;
-        axios.post(url,{uid})
+        const url = `https://srtyapp.herokuapp.com/user/${uid}`;
+        axios.get(url)
         .then(res=>{
 
             setAllUrl(res.data);

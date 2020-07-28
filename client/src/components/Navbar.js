@@ -13,7 +13,7 @@ function Navbar() {
     const handleLogout = (e)=>{
         e.preventDefault();
         setUser.userFunc({type:'LOGOUT'});
-        history.push("/");
+        history.push("/h");
     }
 
     return (

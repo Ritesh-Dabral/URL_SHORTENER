@@ -2,7 +2,6 @@ import app from 'firebase/app';
 import "firebase/auth";
 
 var firebaseConfig = {
-
     apiKey: process.env.APIKEY,
     authDomain: process.env.AUTHDOMAIN,
     databaseURL: process.env.DATABASEURL,
