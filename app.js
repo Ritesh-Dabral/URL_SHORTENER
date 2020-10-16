@@ -1,120 +1,56 @@
 require("dotenv").config();
-// V A R I A B L E S
-var express     = require('express'),
-    app         = express(),
-    bodyParser  = require('body-parser'),
-    srtyIns     = require('./files/mongoose'),
-    cors        = require('cors');
 
-    // ... other imports 
-const path = require("path")
-    
-const PORT = process.env.PORT || 8085;
+/*-------------------- C O N S T S     A N D    V A R S ----------------------*/ 
+    var express     = require('express'),
+        app         = express(),
+        bodyParser  = require('body-parser'),
+        cors        = require('cors'),
+        mongoose    = require('mongoose');
 
-// A P P    S E T T I N G
-app.use(bodyParser.urlencoded({extended:false}));
-app.use(bodyParser.json());
-app.use(cors());
-    // ... other app.use middleware 
-app.use(express.static(path.join(__dirname, "client", "build")))
+        // ... other imports 
+    const path = require("path")
+    const PORT = process.env.PORT || 8085;
+
+    const userRoutes = require('./routes/UserRoutes');    
+    const authRoutes = require('./routes/AuthRoutes');
+
+/*-------------------- M I D D L E W A R E S ----------------------*/ 
+
+    app.use(bodyParser.urlencoded({extended:false}));
+    app.use(bodyParser.json());
+    app.use(cors());
+        // ... other app.use middleware 
+    app.use(express.static(path.join(__dirname, "client", "build")));
 
 
+/*-------------------- R O U T E S ----------------------*/ 
+    app.use('/g',authRoutes);
+    app.use('/ul/:id',userRoutes);
 
-//R O U T E
-
-    //Show all data depending upon uid
-app.get("/user/:uid",(req,res)=>{
-    console.log("Get all links for: ",req.params.uid);
-    const uid = req.params.uid;
-    srtyIns.find({"createdBy":uid},function(err,db_res){
-        if(err){
-            res.status(500).send(err);
-        }
-        else{
-            res.status(200).send(db_res);
-        }
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "build", "index.html"));
     });
-});
 
-    // Redirect
-app.get("/:id",(req,res)=>{
-    const id = req.params.id;
-    if(id === 'favicon.ico') {
-        res.writeHead(404);
-        res.end();
-    } else {
-        console.log(id);
-        srtyIns.findById(id,function(err,db_res){
+
+
+/*-------------------- S E R V E R   A N D    D B ----------------------*/ 
+    if(process.env.NODE_ENV === 'production'){
+        app.use(express.static("client/build"));
+    }
+
+    // connect to db, if successful, then connect to server, otherwise don't
+
+    try {
+        mongoose.connect(process.env.URI, { useUnifiedTopology: true, useNewUrlParser: true }, function(err,db_res){
             if(err)
-            {
-                res.status(500).send(err);
-            }
-            else{
-                const ori_url = db_res.oriURL;
-                console.log("Redirect req from: ",db_res.createdBy," -->for: ",req.params.id);
-                res.redirect(ori_url);
-            }
-        });
-    }
-});
-
-    //Create new document with uid
-app.post("/user/add",(req,res)=>{
-    console.log("New url req from: ",req.body.uid);
-    var original = {
-        name: req.body.name,
-        oriURL: req.body.url,
-        newURL:'',
-        createdBy:req.body.uid
-    }
-    srtyIns.create(original,function(err,db_res){
-        if(err){
-            console.log(err,"\nfor uid: ",req.body.uid);
-            res.status(500).send(err)
-        }
-        else{
-            const temp = `https://srtyapp.herokuapp.com/`+db_res._id;
-            srtyIns.findByIdAndUpdate(db_res._id,{"newURL":temp},function(err,db_res){
-                if(err){
-                    console.log(err);
-                    res.status(500).send(err)
-                }
-                else{
-                    console.log(db_res);
-                    res.status(200).send(db_res._id);
-                }
-            })
-
-        }
+                throw err;
             
-    })
-});
-
-    //destroy
-app.delete('/user/del/:id',(req,res)=>{
-    
-    srtyIns.findByIdAndDelete(req.params.id,function(err,db_res){
-        if(err){
-            console.log(err);
-            res.status(404).send(err)
-        }
-        else{
-            console.log("deleted data with unique id: ",req.params.id);
-            res.status(200).send("Deleted");
-        }
-    });
-});
-
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
-
-
-if(process.env.NODE_ENV === 'production'){
-    app.use(express.static("client/build"));
-}
-
-// S E R V E R
-app.listen(PORT,()=>{
-    console.log("S E R V E R at port",PORT);
-})
+            console.log("DB connection successful");
+                // no error? connect to the server
+            app.listen(PORT,()=>{
+                console.log("S E R V E R at port:",PORT);
+            })
+        });
+    } catch (error) {
+        console.log("Error generated: ", error.message);
+    }
