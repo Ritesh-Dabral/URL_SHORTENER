@@ -3,10 +3,11 @@ const mongoose  = require('mongoose');
 const urlSchema = new mongoose.Schema({
     name: {
         type:String,
-        minlength:3
+        minlength:3,
+        required:true
     },
-    oriURL : {type:String,minlength:10},
-    newURL : {type: String},
+    oriURL : {type:String,minlength:10,required:true},
+    newURL : {type: String,required:true},
     created: {type: Date, default:Date.now()},
 });
 

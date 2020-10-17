@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 /*-------------------- C O N S T S     A N D    V A R S ----------------------*/ 
+
     var express     = require('express'),
         app         = express(),
         bodyParser  = require('body-parser'),
@@ -14,6 +15,7 @@ require("dotenv").config();
     const userRoutes = require('./routes/UserRoutes');    
     const authRoutes = require('./routes/AuthRoutes');
 
+
 /*-------------------- M I D D L E W A R E S ----------------------*/ 
 
     app.use(bodyParser.urlencoded({extended:false}));
@@ -21,6 +23,7 @@ require("dotenv").config();
     app.use(cors());
         // ... other app.use middleware 
     app.use(express.static(path.join(__dirname, "client", "build")));
+
 
 
 /*-------------------- R O U T E S ----------------------*/ 
@@ -41,7 +44,12 @@ require("dotenv").config();
     // connect to db, if successful, then connect to server, otherwise don't
 
     try {
-        mongoose.connect(process.env.URI, { useUnifiedTopology: true, useNewUrlParser: true }, function(err,db_res){
+        const nonDeprecation = {
+            useCreateIndex: true,
+            useUnifiedTopology: true, 
+            useNewUrlParser: true
+        }
+        mongoose.connect(process.env.URI, nonDeprecation , function(err,db_res){
             if(err)
                 throw err;
             

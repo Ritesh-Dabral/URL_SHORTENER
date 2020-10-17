@@ -1,17 +1,12 @@
 const router = require('express').Router();
+const authFunctions = require('../Controller/AuthController');
 
 
 // Login
 
-router.get("/l",(req,res)=>{
-    console.log('called me');
-    res.send("login called");
-});
+router.post("/l", authFunctions.login_post);
 
-router.get('/s',(req,res)=>{
-    console.log('called me');
-    res.send("signup called");
-});
+router.post('/s',authFunctions.signup_post);
 
 
 module.exports =router;
