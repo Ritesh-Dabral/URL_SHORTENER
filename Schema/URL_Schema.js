@@ -30,13 +30,11 @@
         },
         oriURL : {
             type:String,
-            minlength:8,
             required:true,
             validate:{validator:function(props){
                 //console.log('props',props);
                 return isURL(props, options);
             }, message:'Invalid URL'},
-            unique:true
         },
         newURL : {type: String,required:true},
         createdBy: {

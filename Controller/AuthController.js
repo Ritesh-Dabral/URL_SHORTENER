@@ -23,7 +23,7 @@ require('dotenv').config();
 
 
 
-    // Error Handler
+    // E R R O R     H A N D L I N G
 
     function handleError(error){
         //console.log(error.message);
