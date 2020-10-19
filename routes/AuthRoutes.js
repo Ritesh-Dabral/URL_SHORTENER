@@ -18,6 +18,10 @@
 
 
 
+    // L O G O U T (GET)
+
+    router.get('/lo',authFunctions.logout_get);
+
 /*-------------------- E X P O R T S ----------------------*/ 
 
     module.exports =router;

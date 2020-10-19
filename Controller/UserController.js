@@ -100,7 +100,7 @@
         if(error.message.includes('URL validation failed')){
             Object.values(error.errors).forEach(({properties})=>{
                 errorMessage[properties.path] = properties.message;
-                console.log(properties.path,properties.message);
+                //console.log(properties.path,properties.message);
             });
 
             return errorMessage;
@@ -156,8 +156,8 @@
                     if(err)
                         throw Error('ERR_SHRT_URL');
 
-                    console.log('User',db_res);
-                    console.log('URL',db);
+                    //console.log('User',db_res);
+                    //console.log('URL',db);
                     res.status(201).json({"msg":"URL shortened successfully"});
                 });
             });
@@ -293,7 +293,7 @@
                 throw Error('DELERR_UPDT');
             }
 
-            console.log(`User ${user._id} deleted URL with id ${deleted_URL}`);
+            //console.log(`User ${user._id} deleted URL with id ${deleted_URL}`);
             // send good status
             res.status(200).json({"msg":"URL deleted successfully"});
 
@@ -303,3 +303,26 @@
         }
 
     }
+
+
+
+
+    // R E D I R E C T    O R I G I N A L   U R L(GET)
+
+    exports.redirectURL_get = async(req,res)=>{
+        const redirectURL_id = req.params.id;
+
+        try {
+            const url = await URL.findById(redirectURL_id);
+
+            if(!url){
+                throw Error('NOSCHURL');
+            }
+
+            res.redirect(url.oriURL.toString());
+
+        } catch (error) {
+            const errorMessage = handleError(error)
+            res.status(409).json({errorMessage});       
+        }
+    };

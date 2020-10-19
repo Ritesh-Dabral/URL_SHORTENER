@@ -92,3 +92,11 @@ require('dotenv').config();
             res.status(409).json({parsedError});
         }
     }
+
+
+    // L O G O U T (GET)
+
+    module.exports.logout_get = (req,res)=>{
+        res.cookie('srty_jwt','',{httpOnly: true, maxAge: 1}); // 1 sec max age, and then destroy it
+        res.status(200).json({"message":"logout successful"});
+    }

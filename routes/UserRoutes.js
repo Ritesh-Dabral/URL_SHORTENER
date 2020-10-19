@@ -21,38 +21,15 @@
     
 
 
-
-    // R E D I R E C T (GET)
-
-    router.get("/:id",(req,res)=>{
-        const id = req.params.id;
-        if(id === 'favicon.ico') {
-            res.writeHead(404);
-            res.end();
-        } else {
-            console.log(id);
-            srtyIns.findById(id,function(err,db_res){
-                if(err)
-                {
-                    res.status(500).send(err);
-                }
-                else{
-                    const ori_url = db_res.oriURL;
-                    console.log("Redirect req from: ",db_res.createdBy," -->for: ",req.params.id);
-                    res.redirect(ori_url);
-                }
-            });
-        }
-    });
-    
-    
-
-
     // D E L E T E (DELETE)
 
     router.delete('/del/:id',userFunc.verifyUser, userFunc.deleteURL_delete);
 
+    
 
+    // R E D I R E C T (GET)
+
+    router.get("/goto/:id", userFunc.redirectURL_get);
 
 
 /*-------------------- E X P O R T S ----------------------*/ 
