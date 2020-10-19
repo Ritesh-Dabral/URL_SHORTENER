@@ -2,11 +2,12 @@ require("dotenv").config();
 
 /*-------------------- C O N S T S     A N D    V A R S ----------------------*/ 
 
-    var express     = require('express'),
-        app         = express(),
-        bodyParser  = require('body-parser'),
-        cors        = require('cors'),
-        mongoose    = require('mongoose');
+    const express    = require('express'),
+        app          = express(),
+        bodyParser   = require('body-parser'),
+        cors         = require('cors'),
+        mongoose     = require('mongoose'),
+        cookieParser = require('cookie-parser');
 
         // ... other imports 
     const path = require("path")
@@ -20,6 +21,7 @@ require("dotenv").config();
 
     app.use(bodyParser.urlencoded({extended:false}));
     app.use(bodyParser.json());
+    app.use(cookieParser());
     app.use(cors());
         // ... other app.use middleware 
     app.use(express.static(path.join(__dirname, "client", "build")));
@@ -28,7 +30,7 @@ require("dotenv").config();
 
 /*-------------------- R O U T E S ----------------------*/ 
     app.use('/g',authRoutes);
-    app.use('/ul/:id',userRoutes);
+    app.use('/ul',userRoutes);
 
     app.get("*", (req, res) => {
         res.sendFile(path.join(__dirname, "client", "build", "index.html"));
@@ -47,7 +49,8 @@ require("dotenv").config();
         const nonDeprecation = {
             useCreateIndex: true,
             useUnifiedTopology: true, 
-            useNewUrlParser: true
+            useNewUrlParser: true,
+            useFindAndModify: false
         }
         mongoose.connect(process.env.URI, nonDeprecation , function(err,db_res){
             if(err)

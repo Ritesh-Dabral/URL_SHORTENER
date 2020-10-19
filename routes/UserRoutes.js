@@ -1,13 +1,29 @@
-const router  = require('express').Router();
+
+/*-------------------- C O N S T S     A N D    V A R S ----------------------*/ 
+
+    const router   = require('express').Router(),
+          userFunc = require('../Controller/UserController'); 
 
 
-//R O U T E
+
+/*-------------------- R O U T E S ----------------------*/
+
 
     router.get("/h",(req,res)=>{
         console.log("yay");
         res.send("auth route");
     })
-    //Show all data depending upon uid
+
+
+
+    // C R E A T E (POST)
+
+    router.post("/add", userFunc.create_post);
+
+
+
+    // R E A D (GET)
+
     router.get("/user/:uid",(req,res)=>{
         console.log("Get all links for: ",req.params.uid);
         const uid = req.params.uid;
@@ -21,7 +37,11 @@ const router  = require('express').Router();
         });
     });
     
-        // Redirect
+
+
+
+    // R E D I R E C T (GET)
+
     router.get("/:id",(req,res)=>{
         const id = req.params.id;
         if(id === 'favicon.ico') {
@@ -43,39 +63,16 @@ const router  = require('express').Router();
         }
     });
     
-        //Create new document with uid
-    router.post("/user/add",(req,res)=>{
-        console.log("New url req from: ",req.body.uid);
-        var original = {
-            name: req.body.name,
-            oriURL: req.body.url,
-            newURL:'',
-            createdBy:req.body.uid
-        }
-        srtyIns.create(original,function(err,db_res){
-            if(err){
-                console.log(err,"\nfor uid: ",req.body.uid);
-                res.status(500).send(err)
-            }
-            else{
-                const temp = `https://srtyrouter.herokurouter.com/`+db_res._id;
-                srtyIns.findByIdAndUpdate(db_res._id,{"newURL":temp},function(err,db_res){
-                    if(err){
-                        console.log(err);
-                        res.status(500).send(err)
-                    }
-                    else{
-                        console.log(db_res);
-                        res.status(200).send(db_res._id);
-                    }
-                })
     
-            }
-                
-        })
-    });
+
+
+
     
-        //destroy
+
+
+
+    // D E L E T E (DELETE)
+
     router.delete('/user/del/:id',(req,res)=>{
         
         srtyIns.findByIdAndDelete(req.params.id,function(err,db_res){
@@ -93,4 +90,6 @@ const router  = require('express').Router();
 
 
 
-module.exports = router;
+/*-------------------- E X P O R T S ----------------------*/ 
+
+    module.exports = router;

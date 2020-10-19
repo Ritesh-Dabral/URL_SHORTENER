@@ -1,12 +1,23 @@
-const router = require('express').Router();
-const authFunctions = require('../Controller/AuthController');
+/*-------------------- C O N S T S     A N D    V A R S ----------------------*/ 
+
+    const router = require('express').Router();
+    const authFunctions = require('../Controller/AuthController');
 
 
-// Login
+/*-------------------- R O U T E S ----------------------*/ 
 
-router.post("/l", authFunctions.login_post);
+    // L O G I N (POST)
 
-router.post('/s',authFunctions.signup_post);
+    router.post("/l", authFunctions.login_post);
 
 
-module.exports =router;
+    
+    // S I G N   U P (POST)
+
+    router.post('/s',authFunctions.signup_post);
+
+
+
+/*-------------------- E X P O R T S ----------------------*/ 
+
+    module.exports =router;
