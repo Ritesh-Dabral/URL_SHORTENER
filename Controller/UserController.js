@@ -141,7 +141,7 @@
             // control will come here only if the  above func. won't throw error or if it returns true
             const new_url_created = await URL.create(original);
 
-            const tempURL = `http://localhost:8085/${new_url_created._id}`;
+            const tempURL = `http://localhost:8085/ul/g/${new_url_created._id}`;
 
             URL.findByIdAndUpdate(new_url_created._id,{"newURL":tempURL},(err,db)=>{
                 if(err)

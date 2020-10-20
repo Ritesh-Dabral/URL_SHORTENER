@@ -1,7 +1,7 @@
 /*-------------------- C O N S T S     A N D    V A R S ----------------------*/ 
 
     const mongoose  = require('mongoose'),
-          { isURL } = require('validator');
+          { isURL } = require('validator'),
           options   = { 
                 protocols: ['http','https','ftp'], 
                 require_tld: true, 
@@ -14,7 +14,7 @@
                 allow_trailing_dot: false, 
                 allow_protocol_relative_urls: false, 
                 disallow_auth: false 
-            }
+            };
 
 
           

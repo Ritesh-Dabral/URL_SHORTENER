@@ -29,7 +29,7 @@
 
     // R E D I R E C T (GET)
 
-    router.get("/goto/:id", userFunc.redirectURL_get);
+    router.get("/g/:id", userFunc.redirectURL_get);
 
 
 /*-------------------- E X P O R T S ----------------------*/ 

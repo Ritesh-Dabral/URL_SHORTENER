@@ -8,7 +8,7 @@
 
     // L O G I N (POST)
 
-    router.post("/l", authFunctions.login_post);
+    router.post("/l", authFunctions.verifyAccount ,authFunctions.login_post);
 
 
     
@@ -21,6 +21,14 @@
     // L O G O U T (GET)
 
     router.get('/lo',authFunctions.logout_get);
+
+
+
+    // E M A I L    V E R I F Y (GET)
+
+    router.get('/emverif/:email/:id',authFunctions.emailVerify_get);
+
+
 
 /*-------------------- E X P O R T S ----------------------*/ 
 
