@@ -45,7 +45,7 @@ function Signup(props) {
 
 
         // now password and email are valid, send them to backend
-        const url = 'http://localhost:8085/g/s';
+        const url = 'https://urlsrty.herokuapp.com/g/s';
         axios.post(url,{email,password})
             .then(res=>{
                 let msg = res.data.msg+' with email: '+ res.data.email+ '. A confirmation email has been sent to you.'+

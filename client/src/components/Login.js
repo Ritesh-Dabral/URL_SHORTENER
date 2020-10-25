@@ -47,7 +47,7 @@ function Login(props) {
         }
 
 
-        const url = 'https://srtyapp.herokuapp.com/g/l';
+        const url = 'https://urlsrty.herokuapp.com/g/l';
         axios.post(url,{email,password},{
             headers: {
               'Content-Type': 'application/json'

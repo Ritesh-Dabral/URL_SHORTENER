@@ -204,7 +204,7 @@ require('dotenv').config();
 
             // if we reach here, means everything is good
 
-            let verification_URL = `http://localhost:8085/g/emverif/${email}/${verificationSerialKey}`;
+            let verification_URL = `https://urlsrty.herokuapp.com/g/emverif/${email}/${verificationSerialKey}`;
 
             const msg = {
                 to: email.toString(), // Change to your recipient

@@ -63,7 +63,7 @@ function NewURL(props) {
                 url,
                 uid:props.uid
             }
-            let localUrl = 'https://srtyapp.herokuapp.com/ul/add';
+            let localUrl = 'https://urlsrty.herokuapp.com/ul/add';
 
             try {
                 axios.post(localUrl,obj, {

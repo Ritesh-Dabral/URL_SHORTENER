@@ -23,7 +23,7 @@ require("dotenv").config();
     app.use(bodyParser.json());
     app.use(cookieParser());
     app.use(cors({
-        origin: 'https://srtyapp.herokuapp.com',
+        origin: 'https://urlsrty.herokuapp.com/',
         methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE'],
         credentials: true
       }));
