@@ -5,7 +5,7 @@ import axios from 'axios';
 import {isEmail} from 'validator';
 import { connect } from 'react-redux';
 import {loginUser} from '../ReduxStore/User';
-
+import {logoutUser} from '../ReduxStore/User';
 
 function Login(props) {
 
@@ -21,6 +21,9 @@ function Login(props) {
         const loggedInUser = localStorage.getItem('user');
         if(loggedInUser){
             history.push("\d");
+        }
+        else{
+            props.logoutUser();
         }
     },[])
 
@@ -44,7 +47,7 @@ function Login(props) {
         }
 
 
-        const url = 'http://localhost:8085/g/l';
+        const url = 'https://srtyapp.herokuapp.com/g/l';
         axios.post(url,{email,password},{
             headers: {
               'Content-Type': 'application/json'
@@ -134,6 +137,7 @@ const mapStateToProps = (state) =>{
 const mapDispatchToProps = dispatch =>{
     return{
         loginUser: (uid)=>dispatch(loginUser(uid)),
+        logoutUser: ()=>dispatch(logoutUser()),
     }
 }
 

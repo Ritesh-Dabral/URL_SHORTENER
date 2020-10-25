@@ -23,11 +23,12 @@ require("dotenv").config();
     app.use(bodyParser.json());
     app.use(cookieParser());
     app.use(cors({
-        origin: 'http://localhost:3000',
+        origin: 'https://srtyapp.herokuapp.com',
         methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE'],
         credentials: true
       }));
-        // ... other app.use middleware 
+        
+      // ... other app.use middleware 
     app.use(express.static(path.join(__dirname, "client", "build")));
 
 

@@ -4,7 +4,7 @@ import Phone from './images/2srty.png';
 import Happy from './images/3Happy.png';
 import { connect } from 'react-redux';
 import {useHistory} from 'react-router-dom';
-
+import {logoutUser} from '../ReduxStore/User';
 
 function Homepage(props) {
 
@@ -16,7 +16,9 @@ function Homepage(props) {
         if(loggedInUser){
             history.push("\d");
         }
-
+        else{
+            props.logoutUser();
+        }
     },[])
 
     return (
@@ -85,5 +87,9 @@ const mapStateToProps = (state) =>{
         isUser: state.isUser
     }
 }
-
-export default connect(mapStateToProps,null)(Homepage)
+const mapDispatchToProps = dispatch =>{
+    return{
+        logoutUser: ()=>dispatch(logoutUser())
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Homepage)

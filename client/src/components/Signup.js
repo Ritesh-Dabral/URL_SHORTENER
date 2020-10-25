@@ -4,7 +4,7 @@ import axios from 'axios';
 import {isEmail} from 'validator';
 import {useHistory} from 'react-router-dom';
 import { connect } from 'react-redux';
-import Cookies from 'js-cookie';
+import {logoutUser} from '../ReduxStore/User';
 
 function Signup(props) {
     const history               = useHistory();
@@ -19,6 +19,9 @@ function Signup(props) {
         const loggedInUser = localStorage.getItem('user');
         if(loggedInUser){
             history.push("\d");
+        }
+        else{
+            props.logoutUser();
         }
     },[])
 
@@ -129,5 +132,10 @@ const mapStateToProps = (state) =>{
         isUser: state.isUser
     }
 }
+const mapDispatchToProps = dispatch =>{
+    return{
+        logoutUser: ()=>dispatch(logoutUser())
+    }
+}
 
-export default connect(mapStateToProps,null)(Signup)
+export default connect(mapStateToProps,mapDispatchToProps)(Signup)

@@ -63,7 +63,7 @@ function NewURL(props) {
                 url,
                 uid:props.uid
             }
-            let localUrl = 'http://localhost:8085/ul/add';
+            let localUrl = 'https://srtyapp.herokuapp.com/ul/add';
 
             try {
                 axios.post(localUrl,obj, {
@@ -78,7 +78,6 @@ function NewURL(props) {
                     setErrMsg('');
                     setSuccMsg(res.data.msg);
                     setNewUrl(res.data.tempURL);
-                    console.log(res.data);
                 })
                 .catch(error=>{
                     setSuccMsg('');
@@ -127,7 +126,7 @@ function NewURL(props) {
                             type="text" 
                             className="form-control" 
                             placeholder="Name"
-                            onChange={(e)=>{setName(e.target.value)}} 
+                            onChange={(e)=>{setName(e.target.value); setSuccMsg('');}} 
                             name="name" 
                             value = {name}
                         required/>
@@ -138,7 +137,7 @@ function NewURL(props) {
                             type="text" 
                             className="form-control" 
                             placeholder="URL"
-                            onChange={(e)=>{setUrl(e.target.value)}} 
+                            onChange={(e)=>{setUrl(e.target.value); setSuccMsg('');}} 
                             name="url" 
                             value = {url}
                         required/>

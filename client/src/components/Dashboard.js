@@ -3,6 +3,7 @@ import NewURL from './NewURL';
 import Showall from './Showall';
 import { connect } from 'react-redux';
 import {useHistory} from 'react-router-dom';
+import {loginUser} from '../ReduxStore/User';
 
 
 export const DashboardContext = React.createContext();
@@ -14,6 +15,8 @@ function Dashboard(props) {
 
 
     useEffect(()=>{
+
+        props.loginUser(props.uid);
         // if user already exists
         const loggedInUser = localStorage.getItem('user');
         if(!loggedInUser){
@@ -61,5 +64,10 @@ const mapStateToProps = (state) =>{
         uid: state.uid
     }
 }
+const mapDispatchToProps = dispatch =>{
+    return{
+        loginUser: (uid)=>dispatch(loginUser(uid)),
+    }
+}
 
-export default connect(mapStateToProps,null)(Dashboard)
+export default connect(mapStateToProps,mapDispatchToProps)(Dashboard)

@@ -18,7 +18,7 @@ function Showall(props) {
         var id = document.getElementById(`${index}`).value;
             id = id.split('/').pop(); // last element 
         
-        const url = `http://localhost:8085/ul/del/${id}`;
+        const url = `https://srtyapp.herokuapp.com/ul/del/${id}`;
         axios.delete(url,{withCredentials:true})
         .then(res=>{
             setErrMsg('');
@@ -54,7 +54,7 @@ function Showall(props) {
 
     useEffect(()=>{
 
-        const url = `http://localhost:8085/ul/read`;
+        const url = `https://srtyapp.herokuapp.com/ul/read`;
 
         // check whether cookie exists
 

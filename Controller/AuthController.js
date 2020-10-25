@@ -266,7 +266,7 @@ require('dotenv').config();
                 throw Error('NOSCHUSR');
             }
 
-            res.status(200).json({message:"User has been verified"});
+            res.status(200).send(`<h4>Email has been verified</h4><p>Login to srty app and use its features</p>`);
 
         } catch (error) {
             const parsedError = handleError(error);

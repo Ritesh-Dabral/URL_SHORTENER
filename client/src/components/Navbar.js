@@ -15,7 +15,7 @@ function Navbar(props) {
 
     const handleLogout = (e)=>{
         e.preventDefault();
-        let url = 'http://localhost:8085/g/lo';
+        let url = 'https://srtyapp.herokuapp.com/g/lo';
 
         axios.get(url, {withCredentials:true})
             .then(async res=>{
