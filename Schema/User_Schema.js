@@ -60,10 +60,10 @@
             if(check)
                 return user;
                 
-            throw Error('Incorrect Password');
+            throw Error('INCRCTPSWRD');
         }
         
-        throw Error('Incorrect Email');
+        throw Error('INCRCTEML');
     }
 /*-------------------- M O D E L     A N D     E X P O R T S ----------------------*/ 
 

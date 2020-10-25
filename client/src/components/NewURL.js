@@ -1,24 +1,33 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import axios from 'axios';
-import isURL from 'validator/lib/isURL';
+import {isURL, isEmpty}from 'validator';
+import { connect } from 'react-redux';
+import {useHistory} from 'react-router-dom';
 
-function NewURL({uid}) {
+function NewURL(props) {
 
-    const [name,setName] = useState('');
-    const [url,setUrl] = useState('');
-    const [err,setErr] = useState('');
-    const [errColor,setErrColor] = useState('red');
-    const [newUrl,setNewUrl] = useState('');
+    const history               = useHistory();
+    const [name,setName]        = useState('');
+    const [url,setUrl]          = useState('');
+    const [errMsg,setErrMsg]    = useState('');
+    const [newUrl,setNewUrl]    = useState('');
+    const [succMsg, setSuccMsg] = useState('');
+
+    useEffect(()=>{
+        const loggedInUser = localStorage.getItem('user');
+        if(!loggedInUser){
+            history.push("\l");
+        }
+    },[]);
 
     const copyContent = ()=>{
         var copyText = document.querySelector("#input");
         copyText.select();
         document.execCommand("copy");
-        setErrColor('blue');
         if(copyText.value.length===0)
-            setErr('Nothing to copy');
+            setErrMsg('Nothing to copy');
         else{
-            setErr('Copied to Clipboard');
+            setSuccMsg('Copied to Clipboard');
             setNewUrl('');
         }  
     }
@@ -40,30 +49,72 @@ function NewURL({uid}) {
         }
         const validUrl = isURL(url,rules);
         
+        if(isEmpty(name,{ ignore_whitespace:true})){
+            setErrMsg('Name cannot be only whitespaces, right?');
+            return;            
+        }
         if(!validUrl){
-            setErrColor('red');
-            setErr('Not a valid URL');
-            setUrl('');
+            setErrMsg('Not a valid URL');
+            return;
         }
         else{
             const obj = {
                 name,
                 url,
-                uid
+                uid:props.uid
             }
-            axios.post('https://srtyapp.herokuapp.com/user/add',obj)
-            .then(res=>{
-                setUrl('');
-                setName('');
-                setErrColor('green');
-                setErr('Phew!!! Everything is OK');
-                setNewUrl('https://srtyapp.herokuapp.com/'+res.data);
-  
-            })
-            .catch(error=>{
-                setErrColor('red');
-                setErr(error.message)
-            });
+            let localUrl = 'http://localhost:8085/ul/add';
+
+            try {
+                axios.post(localUrl,obj, {
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    withCredentials: true
+                  })
+                .then(res=>{
+                    setUrl('');
+                    setName('');
+                    setErrMsg('');
+                    setSuccMsg(res.data.msg);
+                    setNewUrl(res.data.tempURL);
+                    console.log(res.data);
+                })
+                .catch(error=>{
+                    setSuccMsg('');
+                    let msg ;
+                    if(!error.response.data.name && !error.response.data.oriURL){
+                        msg = error.response.data.createdBy;
+                    }
+                    else if(!error.response.data.createdBy && !error.response.data.oriURL){
+                        msg = error.response.data.name;
+                    }
+                    else if(!error.response.data.name && !error.response.data.createdBy){
+                        msg = error.response.data.oriURL;
+                    }
+                    else{
+                        msg = error.response.data.createdBy+' ,\n'+error.response.data.name+' ,\n'+error.response.data.oriURL;
+                    }
+                    
+                    try {
+                        if(msg)
+                            setErrMsg(msg);
+                        else
+                            throw Error('Not Logged In anymore');
+                    } catch (error) {
+                        history.push("\h");
+                        setErrMsg('Please logout and login again');
+                        localStorage.clear();
+                    }
+    
+                });
+            } catch (error) {
+                history.push("\h");
+                setErrMsg('Please logout and login again');
+                localStorage.clear();
+            }
+
+
         }
     }
 
@@ -94,15 +145,35 @@ function NewURL({uid}) {
                 </div>
                 <button className="ui button yellow" type="submit">Srty</button>
             </form>
-            <div style={{"color":errColor}}>
-                {err}
-            </div>
-            <div className="newURL">
-                <input type="text" value={newUrl} id="input" className="form-control" readOnly/>
-                <button className="ui icon button" onClick={copyContent}><i className="copy icon"></i></button>
-            </div>
+            {
+                // set error
+                errMsg.length ? <div className="ui red message">{errMsg}</div> : <span></span>
+            } 
+            {
+                // set error
+                succMsg.length ? <div className="ui green message">{succMsg}</div> : <span></span>
+            } 
+            {
+                newUrl.length ? 
+                (            
+                    <div className="newURL">
+                        <input type="text" value={newUrl} id="input" className="form-control" readOnly/>
+                        <button className="ui icon button" onClick={copyContent}><i className="copy icon"></i></button>
+                    </div>
+                )
+                :
+                (<span></span>)
+            }
         </div>
     )
 }
 
-export default NewURL
+
+const mapStateToProps = (state) =>{
+    return {
+        isUser: state.isUser,
+        uid: state.uid
+    }
+}
+
+export default connect(mapStateToProps,null)(NewURL);

@@ -158,13 +158,13 @@
 
                     //console.log('User',db_res);
                     //console.log('URL',db);
-                    res.status(201).json({"msg":"URL shortened successfully"});
+                    res.status(201).json({"msg":"URL shortened successfully",tempURL});
                 });
             });
         }
         catch(error){
             const errorMessage = handleError(error)
-            res.status(409).json({errorMessage});
+            res.status(409).json(errorMessage);
         }
     }
 
@@ -216,11 +216,11 @@
 
             // after getting all the data
 
-            res.status(200).json({url_obj});
+            res.status(200).json(url_obj);
 
         } catch (error) {
             const errorMessage = handleError(error)
-            res.status(409).json({errorMessage});           
+            res.status(409).json(errorMessage);           
         }
         
      };
@@ -299,7 +299,7 @@
 
         } catch (error) {
             const errorMessage = handleError(error)
-            res.status(409).json({errorMessage});           
+            res.status(409).json(errorMessage);           
         }
 
     }

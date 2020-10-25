@@ -1,8 +1,23 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import Confused from './images/1Confused.png';
 import Phone from './images/2srty.png';
 import Happy from './images/3Happy.png';
-function Homepage() {
+import { connect } from 'react-redux';
+import {useHistory} from 'react-router-dom';
+
+
+function Homepage(props) {
+
+    const history = useHistory();
+
+    useEffect(()=>{
+        // if user already exists
+        const loggedInUser = localStorage.getItem('user');
+        if(loggedInUser){
+            history.push("\d");
+        }
+
+    },[])
 
     return (
         <div className="Homepage">
@@ -65,4 +80,10 @@ function Homepage() {
     )
 }
 
-export default Homepage
+const mapStateToProps = (state) =>{
+    return {
+        isUser: state.isUser
+    }
+}
+
+export default connect(mapStateToProps,null)(Homepage)

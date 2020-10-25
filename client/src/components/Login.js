@@ -1,35 +1,78 @@
-import React,{useState,useContext} from 'react';
+import React,{useState, useEffect} from 'react';
 import {useHistory} from 'react-router-dom';
 import LoginImg from './images/girlLogin.png';
-import {auth} from './Firebase';
-import {AppContext} from '../App';
+import axios from 'axios';
+import {isEmail} from 'validator';
+import { connect } from 'react-redux';
+import {loginUser} from '../ReduxStore/User';
 
-function Loign() {
 
-    const setUser = useContext(AppContext);
+function Login(props) {
 
-    const history = useHistory();
+    //const setUser = useContext(AppContext);
 
-    const [email,setEmail] = useState('');
-    const [pass,setPass]    = useState('');
-    const [errMsg,setErrMsg] = useState('');
+    const history                  = useHistory();
+    const [email,setEmail]         = useState('');
+    const [password,setPass]       = useState('');
+    const [errMsg,setErrMsg]       = useState('');
+
+
+    useEffect(()=>{
+        const loggedInUser = localStorage.getItem('user');
+        if(loggedInUser){
+            history.push("\d");
+        }
+    },[])
+
 
     const handleSubmit = (e)=>{
         e.preventDefault();
 
-        auth.signInWithEmailAndPassword(email,pass)
-        .then(response=>{
-            setEmail('');
-            setPass('');
-            const uid = response.user.uid;
-            setUser.userState.uid = uid;
-            setUser.userFunc({type:'LOGIN'});
-            history.push(`/d/${uid}`);
-        })
-        .catch(error=>{
-            setErrMsg(error.message);
-            setPass('');
-        })
+
+        // check if email is valid
+
+        if(!isEmail(email)){
+            setErrMsg('Not a valid email address');
+            return;
+        }
+
+        // check if there is a single white space
+
+        if(password.includes(' ')){
+            setErrMsg('Password should not include any whitespace(s)');
+            return;
+        }
+
+
+        const url = 'http://localhost:8085/g/l';
+        axios.post(url,{email,password},{
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            withCredentials: true
+          })
+            .then(res=>{
+                let uid = res.data.uid;
+                props.loginUser(uid);
+                localStorage.setItem('user',true);
+                history.push(`/d`);
+            })
+            .catch(error=>{
+                let errorData;
+                if(!error.response.data.email){
+                    errorData = error.response.data.password;
+                }
+                else if(!error.response.data.password){
+                    errorData = error.response.data.email;
+                }
+                else{
+                    errorData = error.response.data.email+"\n"+error.response.data.password;
+                }
+                
+                setErrMsg(errorData);
+                //console.log(error.response);
+            })
+
     }
 
 
@@ -43,9 +86,6 @@ function Loign() {
             </div>
             <img className="ui centered small bordered image" src={LoginImg} alt="srtyLogo"></img>
             <div className="login" id="myForm">
-                <div className="message">
-                        <span>{errMsg}</span>
-                </div>
                 <div>
                     <div className="logForm">
                         <form className="ui form" onSubmit={handleSubmit}>
@@ -68,12 +108,16 @@ function Loign() {
                                         placeholder="Password"
                                         onChange={(e)=>{setPass(e.target.value)}}
                                         name="password" 
-                                        value = {pass}
+                                        value = {password}
                                     required/>
                             </div>
                             <button className="ui button blue" type="submit">LogIn</button>
                         </form>
                     </div>
+                    {
+                        // set error
+                        errMsg.length ? <div className="ui red message">{errMsg}</div> : <span></span>
+                    } 
                 </div>
             </div>
         </div>
@@ -81,4 +125,16 @@ function Loign() {
     )
 }
 
-export default Loign
+
+const mapStateToProps = (state) =>{
+    return {
+        isUser: state.isUser
+    }
+}
+const mapDispatchToProps = dispatch =>{
+    return{
+        loginUser: (uid)=>dispatch(loginUser(uid)),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Login)

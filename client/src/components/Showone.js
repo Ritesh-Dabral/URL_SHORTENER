@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Showone({url,index,deleteContent,sendContent}) {
+function Showone({each_url,index,deleteContent,sendContent}) {
 
     return (
     <div className="showone">
@@ -8,8 +8,8 @@ function Showone({url,index,deleteContent,sendContent}) {
             <div className="item">
             <span className="ui avatar image" >{index+1}</span>
             <div className="content">
-                <h4 className="header" style={{"color":"blue"}}>{url.name}</h4>
-                <input className="description showOneLink" value={url.newURL} id={index} disabled/>
+                <h4 className="header" style={{"color":"blue"}}>{each_url.name}</h4>
+                <input className="description showOneLink" value={each_url.new_url} id={index} disabled/>
             </div>
             </div>
         </div>

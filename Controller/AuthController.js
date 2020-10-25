@@ -33,6 +33,26 @@ require('dotenv').config();
             password:""
         }
 
+        
+        // invalid password
+        if(error.message.includes('INVLDPSWRD')){
+            errorMessage.password = 'Password must not contain whitespace(s)';
+            return errorMessage;
+        }
+        
+
+        // incorrect password
+        if(error.message.includes('INCRCTPSWRD')){
+            errorMessage.password = 'Incorrect Password';
+            return errorMessage;
+        }
+
+        // incorrect email
+        if(error.message.includes('INCRCTEML')){
+            errorMessage.password = 'Incorrect Email';
+            return errorMessage;
+        }
+
         // no such user exist
         if(error.message.includes('NOSCHUSR') || error.message.includes('Cast to ObjectId failed')){
             errorMessage.email = 'No such user exists';
@@ -82,6 +102,7 @@ require('dotenv').config();
     }
 
 
+
     // V E R I F Y    A C C O U N T
 
     exports.verifyAccount = async (req,res,next)=>{
@@ -106,25 +127,37 @@ require('dotenv').config();
         } catch (error) {
             const parsedError = handleError(error);
             //console.log(parsedError);
-            res.status(409).json({parsedError});           
+            res.status(409).json(parsedError);           
         }        
     }
+
+
 
 
     // L O G I N (POST)
 
     module.exports.login_post = async (req,res)=>{
         const {email, password} = req.body;
-
         try {
+
+            if(password.includes(' ')){
+                throw Error('INVLDPSWRD');
+            }
+            
             const user = await User.login(email,password);
 
             // give a JWT token
             const token = createToken(user._id);
             res.cookie('srty_jwt', token, {httpOnly: true, maxAge: maxAge*1000});
+
+            // another cookie to be accessed by react framework to persist the session
+            res.cookie('srty_user', true, {maxAge: maxAge*1000});
             res.status(200).json({uid:user._id});
         } catch (error) {
-            res.status(404).json({errMsg: error.message});
+            //res.status(404).json({errMsg: error.message});
+            const parsedError = handleError(error);
+            //console.log(parsedError);
+            res.status(404).json(parsedError);  
         }
     }
 
@@ -135,8 +168,13 @@ require('dotenv').config();
 
     module.exports.signup_post = async (req,res)=>{
         const {email, password} = req.body;
-        
+
         try {
+
+            if(password.includes(' ')){
+                throw Error('INVLDPSWRD');
+            }
+
             const newUser = {
                 email,
                 password,
@@ -146,7 +184,7 @@ require('dotenv').config();
             const user = await User.create(newUser);
 
             if(!user){
-                throw Error('USRCR8ERR')
+                throw Error('USRCR8ERR');
             }
             // if no error, send a verification as the user has been created successfully
 
@@ -186,7 +224,7 @@ require('dotenv').config();
         } catch (error) {
             const parsedError = handleError(error);
             //console.log(parsedError);
-            res.status(409).json({parsedError});
+            res.status(409).json(parsedError);
         }
     }
 
@@ -197,6 +235,7 @@ require('dotenv').config();
 
     module.exports.logout_get = (req,res)=>{
         res.cookie('srty_jwt','',{httpOnly: true, maxAge: 1}); // 1 sec max age, and then destroy it
+        res.cookie('srty_user','',{maxAge: 1});               // 1 sec max age, and then destroy it
         res.status(200).json({"message":"logout successful"});
     }
 

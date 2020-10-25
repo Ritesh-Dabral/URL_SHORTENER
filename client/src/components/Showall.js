@@ -1,28 +1,47 @@
 import React,{useState,useEffect} from 'react';
 import Showone from './Showone';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
+import {useHistory} from 'react-router-dom';
 
-function Showall({uid}) {
-
+function Showall(props) {
+    
+    const history                = useHistory();
     const [allUrl,setAllUrl]     = useState([]);
+    const [errMsg,setErrMsg]     = useState('');
+    const [succMsg, setSuccMsg]  = useState('');
     const [refresh,setRefresh]   = useState(false);
-    const [err,setErr]           = useState('');
-    const [errColor,setErrColor] = useState('red');
 
 
     const deleteContent = (index)=>{
-        var copy = document.getElementById(`${index}`).value;
-        copy = copy.split('/').pop();
+        var id = document.getElementById(`${index}`).value;
+            id = id.split('/').pop(); // last element 
         
-        const url = `https://srtyapp.herokuapp.com/user/del/${copy}`
-        axios.delete(url)
+        const url = `http://localhost:8085/ul/del/${id}`;
+        axios.delete(url,{withCredentials:true})
         .then(res=>{
-            setErrColor('green');
-            setErr('Delete Successful');
+            setErrMsg('');
+            setSuccMsg(res.data.msg);
             setRefresh(!refresh);
         })
         .catch(error=>{
-            console.log(error);
+            setSuccMsg('');
+            let msg ;
+            if(!error.response.data.name && !error.response.data.oriURL){
+                msg = error.response.data.createdBy;
+            }
+            else if(!error.response.data.createdBy && !error.response.data.oriURL){
+                msg = error.response.data.name;
+            }
+            else if(!error.response.data.name && !error.response.data.createdBy){
+                msg = error.response.data.oriURL;
+            }
+            else{
+                msg = error.response.data.createdBy+' ,\n'+error.response.data.name+' ,\n'+error.response.data.oriURL;
+            }
+            setErrMsg(msg);
+            
         })
         
     }
@@ -34,30 +53,73 @@ function Showall({uid}) {
 
 
     useEffect(()=>{
-        const url = `https://srtyapp.herokuapp.com/user/${uid}`;
-        axios.get(url)
-        .then(res=>{
 
-            setAllUrl(res.data);
-            setErrColor('red');
-            setErr('');
-        })
-        .catch(error=>{
-            setErrColor('red');
-            setErr(error.message);
-        })
-    },[refresh,uid]);
+        const url = `http://localhost:8085/ul/read`;
+
+        // check whether cookie exists
+
+        try {
+            const loggedInUser = localStorage.getItem('user');
+            if(!loggedInUser){
+                history.push("\l");
+            }
+            
+            axios.get(url, {withCredentials: true})
+            .then(res=>{
+                let myUrl = [...res.data];
+                setAllUrl(myUrl);
+                setErrMsg('');
+            })
+            .catch(error=>{
+                let msg='' ;
+                if(!error.response.data.name && !error.response.data.oriURL){
+                    msg = error.response.data.createdBy;
+                }
+                else if(!error.response.data.createdBy && !error.response.data.oriURL){
+                    msg = error.response.data.name;
+                }
+                else if(!error.response.data.name && !error.response.data.createdBy){
+                    msg = error.response.data.oriURL;
+                }
+                else{
+                    msg = error.response.data.createdBy+' ,\n'+error.response.data.name+' ,\n'+error.response.data.oriURL;
+                }
+                try {
+                    if(msg)
+                        setErrMsg(msg);
+                    else
+                        throw Error('Not Logged In anymore');
+                } catch (error) {
+                    history.push("\h");
+                    setErrMsg('Please logout and login again');
+                    setAllUrl([]);
+                    localStorage.clear();
+                }
+                
+            })   
+        } catch (error) {
+            setErrMsg('Please logout and login again');
+            setAllUrl([]);
+            localStorage.clear();
+            history.push("\h");
+        }
+    },[refresh]);
 
 
     return (
         <div className="showall">
-            <div className="message" style={{"color":errColor}}>
-                {err}
-            </div>
+            {
+                // set error
+                errMsg.length ? <div className="ui red message">{errMsg}</div> : <span></span>
+            }
+            {
+                // set success
+                succMsg.length ? <div className="ui green message">{succMsg}</div> : <span></span>
+            } 
             <div className="remainingAll">
                 {
-                    allUrl.length ? (allUrl.map((url,index)=>(
-                        <Showone key={index} url={url} index={index} deleteContent={deleteContent} sendContent={sendContent} />
+                    allUrl.length ? (allUrl.map((each_url,index)=>(
+                        <Showone key={index} each_url={each_url} index={index} deleteContent={deleteContent} sendContent={sendContent} />
                     ))):(<h3 style={{"textAlign":"center"}}>Shortify some links...go ahead</h3>)
                 }
             </div>
@@ -65,4 +127,11 @@ function Showall({uid}) {
     )
 }
 
-export default Showall
+const mapStateToProps = (state) =>{
+    return {
+        isUser: state.isUser,
+        uid: state.uid
+    }
+}
+
+export default connect(mapStateToProps,null)(Showall)

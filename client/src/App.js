@@ -1,40 +1,19 @@
-import React,{useReducer} from 'react';
+import React from 'react';
 import Navbar from './components/Navbar';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Homepage from './components/Homepage';
-import {BrowserRouter as Router, Route,Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Route,Switch, Redirect} from 'react-router-dom';
 import Dashboard from './components/Dashboard';
+import { Provider } from 'react-redux';
+import store from './ReduxStore/Store';
 
 
-export const AppContext = React.createContext();
-
-const initialState = {
-  isUser:false,
-  uid:''
-}
-
-const reducer = (state,action)=>{
-  switch(action.type){
-    case 'LOGIN': return {
-      ...state,
-      isUser:true
-    }
-    case 'LOGOUT' : return {
-      isUser : false,
-      uid:''
-    }
-
-    default : return state
-  }
-}
 
 function App() {
 
-  const [userDet,dispatch] = useReducer(reducer,initialState);
-
   return (
-    <AppContext.Provider value={{userState:userDet,userFunc:dispatch}}>
+    <Provider store={store}>
       <Router>
         <div className="App">
           <div className="sidenav">
@@ -45,17 +24,15 @@ function App() {
                 <Route exact path="/h" component={Homepage}/>
                 <Route exact path="/l" component={Login}/>
                 <Route exact path="/s" component={Signup}/>
-                <Route exact path="/d/:id" >
-                    {
-                      userDet.isUser ? <Dashboard uid={userDet.uid} /> : <Login/>
-                    }
+                <Route exact path="/d" component={Dashboard}/>
+                <Route exact path="*">
+                  <Redirect to="/h" />
                 </Route>
-                <Route exact path="*" component={Homepage}/>
             </Switch>
           </div>        
         </div>
       </Router>
-    </AppContext.Provider>
+    </Provider>
   );
 }
 

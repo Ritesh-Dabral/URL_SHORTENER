@@ -1,13 +1,25 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import NewURL from './NewURL';
 import Showall from './Showall';
+import { connect } from 'react-redux';
+import {useHistory} from 'react-router-dom';
+
 
 export const DashboardContext = React.createContext();
 
-function Dashboard({uid}) {
+function Dashboard(props) {
 
-    const [neew,setNeew] = useState(false);
+    const [neew,setNeew] = useState(true);
+    const history        = useHistory();
 
+
+    useEffect(()=>{
+        // if user already exists
+        const loggedInUser = localStorage.getItem('user');
+        if(!loggedInUser){
+            history.push('\l');
+        }
+    },[])
 
     const aClicked = ()=>{
         setNeew(!neew);
@@ -27,15 +39,15 @@ function Dashboard({uid}) {
             <div className="dashboard">
                 <div className="ui top attached tabular menu" id="dash">
                     <div className="item spec" onClick={aClicked}>
-                        New
+                        Show All
                     </div>
                     <div className="item active spec" onClick={aClicked}>
-                        Show All
+                        New URL
                     </div>
                 </div>
                 <div className="ui bottom attached segment">
                     {
-                        neew  ? (<NewURL uid={uid} />):(<Showall uid={uid} />)
+                        neew  ? (<NewURL/>):(<Showall/>)
                     }
                 </div>
             </div>
@@ -43,4 +55,11 @@ function Dashboard({uid}) {
     )
 }
 
-export default Dashboard
+const mapStateToProps = (state) =>{
+    return {
+        isUser: state.isUser,
+        uid: state.uid
+    }
+}
+
+export default connect(mapStateToProps,null)(Dashboard)
